@@ -21,16 +21,4 @@ class SubjectEnrollmentService {
   Future<List<SubjectEnrollment>> getSubjectEnrollmentsBySubjectId(String subjectId) async {
     return await _repository.getSubjectEnrollmentsBySubjectId(subjectId);
   }
-
-  Future<void> addSubjectEnrollment(SubjectEnrollment enrollment) async {
-    await _repository.addSubjectEnrollment(enrollment);
-  }
-
-  Future<void> updateSubjectEnrollment(SubjectEnrollment enrollment) async {
-    await _repository.updateSubjectEnrollment(enrollment);
-  }
-
-  Future<void> deleteSubjectEnrollment(String id) async {
-    await _repository.deleteSubjectEnrollment(id);
-  }
 }

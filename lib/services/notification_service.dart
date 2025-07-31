@@ -25,8 +25,4 @@ class NotificationService {
   Future<void> updateNotification(NotificationModel notification) async {
     await _notificationRepository.updateNotification(notification);
   }
-
-  Future<void> deleteNotification(String id) async {
-    await _notificationRepository.deleteNotification(id);
-  }
 }

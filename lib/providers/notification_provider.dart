@@ -52,11 +52,6 @@ class NotificationNotifier extends StateNotifier<List<NotificationModel>> {
     await _service.updateNotification(notification);
     await loadNotifications();
   }
-
-  Future<void> deleteNotification(String id) async {
-    await _service.deleteNotification(id);
-    await loadNotifications();
-  }
 }
 
 // 5. Proveedor del StateNotifier

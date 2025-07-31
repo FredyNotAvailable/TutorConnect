@@ -27,19 +27,4 @@ class SubjectEnrollmentRepositoryImpl implements SubjectEnrollmentRepository {
   Future<List<SubjectEnrollment>> getSubjectEnrollmentsBySubjectId(String subjectId) {
     return dataSource.getSubjectEnrollmentsBySubjectId(subjectId);
   }
-
-  @override
-  Future<void> addSubjectEnrollment(SubjectEnrollment enrollment) {
-    return dataSource.addSubjectEnrollment(enrollment);
-  }
-
-  @override
-  Future<void> updateSubjectEnrollment(SubjectEnrollment enrollment) {
-    return dataSource.updateSubjectEnrollment(enrollment);
-  }
-
-  @override
-  Future<void> deleteSubjectEnrollment(String id) {
-    return dataSource.deleteSubjectEnrollment(id);
-  }
 }

@@ -46,21 +46,6 @@ class SubjectEnrollmentNotifier extends StateNotifier<List<SubjectEnrollment>> {
   Future<SubjectEnrollment?> getEnrollmentById(String id) async {
     return await _service.getSubjectEnrollmentById(id);
   }
-
-  Future<void> addEnrollment(SubjectEnrollment enrollment) async {
-    await _service.addSubjectEnrollment(enrollment);
-    await loadEnrollments();
-  }
-
-  Future<void> updateEnrollment(SubjectEnrollment enrollment) async {
-    await _service.updateSubjectEnrollment(enrollment);
-    await loadEnrollments();
-  }
-
-  Future<void> deleteEnrollment(String id) async {
-    await _service.deleteSubjectEnrollment(id);
-    await loadEnrollments();
-  }
 }
 
 // 5. Proveedor del StateNotifier

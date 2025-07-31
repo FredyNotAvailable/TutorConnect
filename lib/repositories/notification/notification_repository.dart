@@ -10,6 +10,4 @@ abstract class NotificationRepository {
   Future<void> addNotification(NotificationModel notification);
 
   Future<void> updateNotification(NotificationModel notification);
-
-  Future<void> deleteNotification(String id);
 }

@@ -32,9 +32,4 @@ class NotificationRepositoryImpl implements NotificationRepository {
   Future<void> updateNotification(NotificationModel notification) {
     return dataSource.updateNotification(notification);
   }
-
-  @override
-  Future<void> deleteNotification(String id) {
-    return dataSource.deleteNotification(id);
-  }
 }

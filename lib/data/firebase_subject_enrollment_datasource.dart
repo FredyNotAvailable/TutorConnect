@@ -74,34 +74,4 @@ class FirebaseSubjectEnrollmentDataSource {
       return [];
     }
   }
-
-  Future<void> addSubjectEnrollment(SubjectEnrollment enrollment) async {
-    try {
-      await subjectEnrollmentsCollection.add(enrollment.toMap());
-      Fluttertoast.showToast(msg: 'Matrícula agregada');
-    } catch (e, stackTrace) {
-      logger.e('Error al agregar matrícula', error: e, stackTrace: stackTrace);
-      Fluttertoast.showToast(msg: 'Error al agregar matrícula: $e');
-    }
-  }
-
-  Future<void> updateSubjectEnrollment(SubjectEnrollment enrollment) async {
-    try {
-      await subjectEnrollmentsCollection.doc(enrollment.id).update(enrollment.toMap());
-      Fluttertoast.showToast(msg: 'Matrícula actualizada');
-    } catch (e, stackTrace) {
-      logger.e('Error al actualizar matrícula', error: e, stackTrace: stackTrace);
-      Fluttertoast.showToast(msg: 'Error al actualizar matrícula: $e');
-    }
-  }
-
-  Future<void> deleteSubjectEnrollment(String id) async {
-    try {
-      await subjectEnrollmentsCollection.doc(id).delete();
-      Fluttertoast.showToast(msg: 'Matrícula eliminada');
-    } catch (e, stackTrace) {
-      logger.e('Error al eliminar matrícula', error: e, stackTrace: stackTrace);
-      Fluttertoast.showToast(msg: 'Error al eliminar matrícula: $e');
-    }
-  }
 }

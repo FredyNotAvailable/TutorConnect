@@ -76,14 +76,4 @@ class FirebaseNotificationDataSource {
       Fluttertoast.showToast(msg: 'Error al actualizar notificación: $e');
     }
   }
-
-  Future<void> deleteNotification(String id) async {
-    try {
-      await notificationsCollection.doc(id).delete();
-      Fluttertoast.showToast(msg: 'Notificación eliminada');
-    } catch (e, stackTrace) {
-      logger.e('Error al eliminar notificación', error: e, stackTrace: stackTrace);
-      Fluttertoast.showToast(msg: 'Error al eliminar notificación: $e');
-    }
-  }
 }
