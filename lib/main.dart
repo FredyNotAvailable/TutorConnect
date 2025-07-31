@@ -10,7 +10,7 @@ final firebaseConnectedProvider = Provider<bool>((ref) => false);
 // Handler para mensajes en segundo plano
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('Mensaje en background recibido: ${message.messageId}');
+  // print('Mensaje en background recibido: ${message.messageId}');
 }
 
 void main() async {

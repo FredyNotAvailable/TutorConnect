@@ -40,18 +40,8 @@ class UserNotifier extends StateNotifier<List<User>> {
     state = users;
   }
 
-  Future<void> addUser(User user) async {
-    await _service.addUser(user);
-    await loadUsers();
-  }
-
   Future<void> updateUser(User user) async {
     await _service.updateUser(user);
-    await loadUsers();
-  }
-
-  Future<void> deleteUser(String id) async {
-    await _service.deleteUser(id);
     await loadUsers();
   }
 

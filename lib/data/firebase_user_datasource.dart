@@ -1,17 +1,15 @@
 // firebase_user_datasource.dart
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tutorconnect/repositories/user/user_repository.dart';
 import '../models/user.dart';
 import 'package:logger/logger.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class FirebaseUserDataSource extends UserRepository {
+class FirebaseUserDataSource {
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
   final logger = Logger();
 
 
-@override
 Future<User?> getUserById(String id) async {
   try {
     final doc = await usersCollection.doc(id).get();
@@ -28,7 +26,6 @@ Future<User?> getUserById(String id) async {
   return null;
 }
 
-  @override
   Future<List<User>> getAllUsers() async {
     final querySnapshot = await usersCollection.get();
     return querySnapshot.docs
@@ -36,18 +33,7 @@ Future<User?> getUserById(String id) async {
         .toList();
   }
 
-  @override
-  Future<void> addUser(User user) async {
-    await usersCollection.add(user.toMap());
-  }
-
-  @override
   Future<void> updateUser(User user) async {
     await usersCollection.doc(user.id).update(user.toMap());
-  }
-
-  @override
-  Future<void> deleteUser(String id) async {
-    await usersCollection.doc(id).delete();
   }
 }

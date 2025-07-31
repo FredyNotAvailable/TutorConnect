@@ -7,9 +7,5 @@ abstract class UserRepository {
 
   Future<List<User>> getAllUsers();
 
-  Future<void> addUser(User user);
-
   Future<void> updateUser(User user);
-
-  Future<void> deleteUser(String id);
 }
