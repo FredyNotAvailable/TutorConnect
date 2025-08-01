@@ -27,18 +27,23 @@ class AuthService {
         if (fcmToken != null) {
           final currentUser = await userService.getUserById(fbUser.uid);
 
-          if (currentUser != null && currentUser.fcmToken != fcmToken) {
+          if (currentUser == null) {
+            // Usuario no encontrado, lanzar excepción o manejar error
+            throw Exception('Usuario con ID ${fbUser.uid} no encontrado en la base de datos.');
+          }
+
+          if (currentUser.fcmToken != fcmToken) {
             final updatedUser = currentUser.copyWith(fcmToken: fcmToken);
             await userService.updateUser(updatedUser);
           }
         }
       }
-
       return fbUser;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
   }
+
 
   /// Cerrar sesión
   Future<void> signOut() async {
