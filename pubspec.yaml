@@ -43,6 +43,10 @@ dependencies:
   logger: ^2.0.2
   fluttertoast: ^8.2.1
 
+  # Google
+  http: ^1.4.0
+  googleapis_auth: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

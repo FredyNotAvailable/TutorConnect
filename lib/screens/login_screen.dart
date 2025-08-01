@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorconnect/routes/app_routes.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -26,7 +27,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       if (user != null) {
         if (!mounted) return; // Para evitar errores si el widget fue desmontado
-        Navigator.pushReplacementNamed(context, '/home');
+        // Navigator.pushReplacementNamed(context, '/home');
+        Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No se pudo iniciar sesión')),

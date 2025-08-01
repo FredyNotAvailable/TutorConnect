@@ -1,16 +1,22 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:tutorconnect/models/user.dart'; // Tu modelo User
 import 'package:tutorconnect/routes/app_routes.dart';
 import 'package:tutorconnect/providers/auth_provider.dart';
 import 'package:tutorconnect/providers/user_provider.dart';
 
-
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  Widget build(BuildContext context) {
     final authUserAsync = ref.watch(authStateProvider);
 
     return authUserAsync.when(
@@ -21,7 +27,6 @@ class HomeScreen extends ConsumerWidget {
           );
         }
 
-        // Aquí usamos FutureBuilder para obtener el User personalizado desde Firestore
         return FutureBuilder<User?>(
           future: ref.read(userServiceProvider).getUserById(firebaseUser.uid),
           builder: (context, snapshot) {
@@ -51,7 +56,7 @@ class HomeScreen extends ConsumerWidget {
                       Navigator.pushNamed(
                         context,
                         AppRoutes.profile,
-                        arguments: customUser, // Pasamos el User personalizado
+                        arguments: customUser,
                       );
                     },
                   ),
@@ -64,9 +69,6 @@ class HomeScreen extends ConsumerWidget {
                     },
                   ),
                 ],
-              ),
-              body: const Center(
-                child: Text('Contenido de HomeScreen'),
               ),
             );
           },

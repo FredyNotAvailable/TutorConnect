@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorconnect/firebase/push_notification_service.dart';
 import 'routes/app_routes.dart';
 import 'firebase/firebase_initializer.dart';
 import 'firebase/firebase_providers.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final connected = await initializeFirebaseAndMessaging();
+
+  if (connected) {
+    await PushNotificationService.initialize(); // Inicializa notificaciones push
+  }
 
   runApp(
     ProviderScope(
@@ -26,6 +34,7 @@ class MyApp extends ConsumerWidget {
     final firebaseConnected = ref.watch(firebaseConnectedProvider);
 
     return MaterialApp(
+      navigatorKey: navigatorKey, // Importante para poder mostrar SnackBar desde main
       title: 'TutorConnect',
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.login,
