@@ -4,6 +4,7 @@ import 'package:tutorconnect/firebase/push_notification_service.dart';
 import 'routes/app_routes.dart';
 import 'firebase/firebase_initializer.dart';
 import 'firebase/firebase_providers.dart';
+import 'screens/auth_gate.dart';  // <-- Importa el nuevo widget
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -18,9 +19,6 @@ void main() async {
 
   runApp(
     ProviderScope(
-      overrides: [
-        firebaseConnectedProvider.overrideWithValue(connected),
-      ],
       child: const MyApp(),
     ),
   );
@@ -31,27 +29,41 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final firebaseConnected = ref.watch(firebaseConnectedProvider);
+    final firebaseConnectedAsync = ref.watch(firebaseConnectedProvider);
 
-    return MaterialApp(
-      navigatorKey: navigatorKey, // Importante para poder mostrar SnackBar desde main
-      title: 'TutorConnect',
-      debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.login,
-      onGenerateRoute: AppRoutes.generateRoute,
-      builder: (context, child) {
-        if (!firebaseConnected) {
-          return const Scaffold(
-            body: Center(
-              child: Text(
-                'Error de conexión con Firebase',
-                style: TextStyle(fontSize: 18, color: Colors.red),
+    return firebaseConnectedAsync.when(
+      data: (connected) {
+        if (!connected) {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Text(
+                  'Error de conexión con Firebase',
+                  style: TextStyle(fontSize: 18, color: Colors.red),
+                ),
               ),
             ),
           );
         }
-        return child!;
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          title: 'TutorConnect',
+          debugShowCheckedModeBanner: false,
+          // eliminamos initialRoute y onGenerateRoute para delegar a AuthGate
+          home: const AuthGate(),
+          onGenerateRoute: AppRoutes.generateRoute,
+        );
       },
+      loading: () => const MaterialApp(
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+      ),
+      error: (error, _) => MaterialApp(
+        home: Scaffold(
+          body: Center(child: Text('Error al conectar con Firebase: $error')),
+        ),
+      ),
     );
   }
 }

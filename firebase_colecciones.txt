@@ -23,3 +23,10 @@
 12. classrooms: Información de las aulas o salones físicos disponibles. ✅
 
 13. teacher_plans: Planes que los docentes crean para registrar las materias que impartirán por carrera y ciclo, funcionando como una inscripción docente. ✅
+
+
+flutter clean
+flutter pub get
+clear
+flutter run
+

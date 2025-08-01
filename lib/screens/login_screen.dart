@@ -27,7 +27,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       if (user != null) {
         if (!mounted) return; // Para evitar errores si el widget fue desmontado
-        // Navigator.pushReplacementNamed(context, '/home');
         Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -43,6 +42,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  // Métodos para login rápido con credenciales predefinidas
   void _loginWithFreddyCredentials() {
     _emailController.text = 'frguamango@uide.edu.ec';
     _passwordController.text = 'password';
@@ -84,7 +84,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _passwordController.text = 'password';
     _login();
   }
-
 
   @override
   Widget build(BuildContext context) {
