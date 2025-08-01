@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:tutorconnect/models/user.dart'; // Tu modelo User
 import 'package:tutorconnect/routes/app_routes.dart';
 import 'package:tutorconnect/providers/auth_provider.dart';

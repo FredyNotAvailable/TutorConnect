@@ -44,7 +44,6 @@ class AuthService {
     }
   }
 
-
   /// Cerrar sesión
   Future<void> signOut() async {
     await _auth.signOut();
