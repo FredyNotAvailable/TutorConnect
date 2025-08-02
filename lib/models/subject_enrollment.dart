@@ -27,7 +27,7 @@ class SubjectEnrollment {
     return SubjectEnrollment(
       id: documentId,
       enrollmentDate: (map['enrollmentDate'] as Timestamp).toDate(),
-      status: _stringToStatus(map['status'] ?? 'in_progress'),
+      status: _stringToStatus(map['status'] ?? 'inProgress'),
       studentId: map['studentId'] ?? '',
       subjectId: map['subjectId'] ?? '',
       term: map['term'] ?? '',
@@ -50,7 +50,7 @@ class SubjectEnrollment {
         return SubjectEnrollmentStatus.passed;
       case 'failed':
         return SubjectEnrollmentStatus.failed;
-      case 'in_progress':
+      case 'inProgress':
       default:
         return SubjectEnrollmentStatus.inProgress;
     }
@@ -63,7 +63,7 @@ class SubjectEnrollment {
       case SubjectEnrollmentStatus.failed:
         return 'failed';
       case SubjectEnrollmentStatus.inProgress:
-        return 'in_progress';
+        return 'inProgress';
     }
   }
 }

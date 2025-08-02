@@ -21,4 +21,8 @@ class SubjectEnrollmentService {
   Future<List<SubjectEnrollment>> getSubjectEnrollmentsBySubjectId(String subjectId) async {
     return await _repository.getSubjectEnrollmentsBySubjectId(subjectId);
   }
+
+  Future<List<SubjectEnrollment>> getSubjectEnrollmentsByStatus(String subjectId) async {
+    return await _repository.getSubjectEnrollmentsByStatus(subjectId);
+  }
 }

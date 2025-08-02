@@ -1,22 +1,22 @@
 class Career {
   final String id;
-  final String nombre;
+  final String name;
 
   Career({
     required this.id,
-    required this.nombre,
+    required this.name,
   });
 
   factory Career.fromMap(Map<String, dynamic> map, String documentId) {
     return Career(
       id: documentId,
-      nombre: map['nombre'] ?? '',
+      name: map['name'] ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'nombre': nombre,
+      'name': name,
     };
   }
 }

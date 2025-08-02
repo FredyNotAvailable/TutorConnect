@@ -15,7 +15,7 @@ class Tutoring {
   final String endTime;          // Hora de fin (formato "HH:mm")
   final String notes;            // Notas o comentarios adicionales sobre la tutoría
   final TutoringStatus status;   // Estado de la tutoría (activo, finalizada, cancelada)
-  final List<String> studentIds; // Lista de IDs de los estudiantes inscritos o invitados
+  final List<String> tutoringRequestIds; // Lista de IDs de los tutoringRequestIds inscritos o invitados
   final String subjectId;        // ID de la materia o asignatura
   final String teacherId;        // ID del docente que imparte la tutoría
   final String topic;            // Tema o asunto que se tratará en la tutoría
@@ -29,7 +29,7 @@ class Tutoring {
     required this.endTime,
     required this.notes,
     required this.status,
-    required this.studentIds,
+    required this.tutoringRequestIds,
     required this.subjectId,
     required this.teacherId,
     required this.topic,
@@ -45,7 +45,7 @@ class Tutoring {
       endTime: map['endTime'] ?? '',
       notes: map['notes'] ?? '',
       status: _stringToStatus(map['status'] ?? 'active'),
-      studentIds: List<String>.from(map['studentIds'] ?? []),
+      tutoringRequestIds: List<String>.from(map['tutoringRequestIds'] ?? []),
       subjectId: map['subjectId'] ?? '',
       teacherId: map['teacherId'] ?? '',
       topic: map['topic'] ?? '',
@@ -61,7 +61,7 @@ class Tutoring {
       'endTime': endTime,
       'notes': notes,
       'status': _statusToString(status),
-      'studentIds': studentIds,
+      'tutoringRequestIds': tutoringRequestIds,
       'subjectId': subjectId,
       'teacherId': teacherId,
       'topic': topic,

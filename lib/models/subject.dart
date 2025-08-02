@@ -1,22 +1,22 @@
 class Subject {
   final String id;
-  final String nombre;
+  final String name;
 
   Subject({
     required this.id,
-    required this.nombre,
+    required this.name,
   });
 
   factory Subject.fromMap(Map<String, dynamic> map, String documentId) {
     return Subject(
       id: documentId,
-      nombre: map['nombre'] ?? '',
+      name: map['name'] ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'nombre': nombre,
+      'name': name,
     };
   }
 }
