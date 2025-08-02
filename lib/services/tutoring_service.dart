@@ -22,7 +22,7 @@ class TutoringService {
     return _repository.getTutoringsByStudentId(studentId);
   }
 
-  Future<void> addTutoring(Tutoring tutoring) {
+  Future<Tutoring> addTutoring(Tutoring tutoring) {
     return _repository.addTutoring(tutoring);
   }
 

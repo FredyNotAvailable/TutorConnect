@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
+import 'package:tutorconnect/models/tutoring.dart';
 import '../models/tutoring_request.dart';
 
 class FirebaseTutoringRequestDataSource {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference tutoringRequestsCollection =
       FirebaseFirestore.instance.collection('tutoring_requests');
   final logger = Logger();
@@ -43,11 +45,12 @@ class FirebaseTutoringRequestDataSource {
     try {
       final querySnapshot = await tutoringRequestsCollection
           .where('studentId', isEqualTo: studentId)
-          .orderBy('sentAt', descending: true)
           .get();
+
       final requests = querySnapshot.docs
           .map((doc) => TutoringRequest.fromMap(doc.data() as Map<String, dynamic>, doc.id))
           .toList();
+
       Fluttertoast.showToast(msg: 'Se cargaron ${requests.length} solicitudes para estudiante');
       return requests;
     } catch (e, stackTrace) {
@@ -57,13 +60,16 @@ class FirebaseTutoringRequestDataSource {
     }
   }
 
-  Future<void> addTutoringRequest(TutoringRequest request) async {
+  Future<TutoringRequest> addTutoringRequest(TutoringRequest request) async {
     try {
-      await tutoringRequestsCollection.add(request.toMap());
+      final docRef = await tutoringRequestsCollection.add(request.toMap());
+      final createdRequest = request.copyWith(id: docRef.id);
       Fluttertoast.showToast(msg: 'Solicitud de tutoría agregada');
+      return createdRequest;
     } catch (e, stackTrace) {
       logger.e('Error al agregar solicitud', error: e, stackTrace: stackTrace);
       Fluttertoast.showToast(msg: 'Error al agregar solicitud: $e');
+      rethrow;
     }
   }
 

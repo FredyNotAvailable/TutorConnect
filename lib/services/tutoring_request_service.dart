@@ -18,8 +18,8 @@ class TutoringRequestService {
     return await _repository.getTutoringRequestsByStudentId(studentId);
   }
 
-  Future<void> addTutoringRequest(TutoringRequest tutoringRequest) async {
-    await _repository.addTutoringRequest(tutoringRequest);
+  Future<TutoringRequest> addTutoringRequest(TutoringRequest tutoringRequest) async {
+    return await _repository.addTutoringRequest(tutoringRequest);
   }
 
   Future<void> updateTutoringRequest(TutoringRequest tutoringRequest) async {

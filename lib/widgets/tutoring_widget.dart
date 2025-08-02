@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorconnect/models/tutoring.dart';
+import 'package:tutorconnect/models/tutoring_request.dart';
 import 'package:tutorconnect/providers/tutoring_provider.dart';
+import 'package:tutorconnect/providers/tutoring_request_provider.dart';
 import 'package:tutorconnect/providers/user_provider.dart';
 import 'package:tutorconnect/utils/helpers/student_helper.dart';
 import 'package:tutorconnect/widgets/teacher/crear_tutoria_widget.dart';
@@ -18,6 +21,8 @@ class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
   String? _error;
   bool _showCrearTutoria = false;
   UserRole? _currentUserRole;
+
+  List<TutoringRequest> _studentTutoringRequests = [];
 
   @override
   void initState() {
@@ -38,7 +43,7 @@ class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
       }
 
       setState(() {
-        _currentUserRole = user.role; // Guardamos el rol para mostrar botón
+        _currentUserRole = user.role;
       });
 
       final tutoringNotifier = ref.read(tutoringProvider.notifier);
@@ -46,7 +51,14 @@ class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
       if (user.role == UserRole.teacher) {
         await tutoringNotifier.loadTutoringsByTeacherId(user.id);
       } else if (user.role == UserRole.student) {
-        await tutoringNotifier.loadTutoringsByStudentId(user.id);
+        // Primero, carga solicitudes de tutoría para este estudiante
+        final tutoringRequestNotifier = ref.read(tutoringRequestProvider.notifier);
+        _studentTutoringRequests = await tutoringRequestNotifier.getTutoringRequestsByStudentId(user.id);
+
+        final tutoringRequestIds = _studentTutoringRequests.map((r) => r.id).toList();
+
+        await tutoringNotifier.loadTutoringsByTutoringRequestIds(tutoringRequestIds);
+
       } else {
         setState(() {
           _error = 'Rol de usuario no válido.';
@@ -73,24 +85,37 @@ class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
         onBack: () {
           setState(() {
             _showCrearTutoria = false;
+            _loading = true;
           });
+          _loadTutorings(); // recarga las tutorías al volver
         },
       );
     }
 
     final tutorings = ref.watch(tutoringProvider);
 
+    // Si es estudiante, filtrar solo tutorías con solicitudes aceptadas
+    List<Tutoring> filteredTutorings = tutorings;
+    if (_currentUserRole == UserRole.student) {
+      final acceptedTutoringIds = _studentTutoringRequests
+          .where((req) => req.status == TutoringRequestStatus.accepted)
+          .map((req) => req.tutoringId)
+          .toSet();
+
+      filteredTutorings = tutorings.where((t) => acceptedTutoringIds.contains(t.id)).toList();
+    }
+
     return Scaffold(
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
               ? Center(child: Text(_error!))
-              : tutorings.isEmpty
+              : filteredTutorings.isEmpty
                   ? const Center(child: Text('No hay tutorías disponibles.'))
                   : ListView.builder(
-                      itemCount: tutorings.length,
+                      itemCount: filteredTutorings.length,
                       itemBuilder: (context, index) {
-                        final tutoring = tutorings[index];
+                        final tutoring = filteredTutorings[index];
                         return TutoringCard(tutoring: tutoring);
                       },
                     ),

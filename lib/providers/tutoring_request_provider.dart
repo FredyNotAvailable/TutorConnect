@@ -43,10 +43,12 @@ class TutoringRequestNotifier extends StateNotifier<List<TutoringRequest>> {
     return await _service.getTutoringRequestById(id);
   }
 
-  Future<void> addTutoringRequest(TutoringRequest tutoringRequest) async {
-    await _service.addTutoringRequest(tutoringRequest);
+  Future<TutoringRequest> addTutoringRequest(TutoringRequest tutoringRequest) async {
+    final createdRequest = await _service.addTutoringRequest(tutoringRequest);
     await loadTutoringRequests();
+    return createdRequest;
   }
+
 
   Future<void> updateTutoringRequest(TutoringRequest tutoringRequest) async {
     await _service.updateTutoringRequest(tutoringRequest);

@@ -1,5 +1,5 @@
 import 'package:tutorconnect/data/firebase_tutoring_datasource.dart';
-
+import 'package:tutorconnect/models/tutoring_request.dart';
 import '../../models/tutoring.dart';
 import 'tutoring_repository.dart';
 
@@ -28,13 +28,19 @@ class TutoringRepositoryImpl implements TutoringRepository {
     return dataSource.getTutoringsByStudentId(studentId);
   }
 
+  // Nuevo método para tutorías por lista de IDs de solicitudes
   @override
-  Future<void> addTutoring(Tutoring tutoring) async {
-    await dataSource.addTutoring(tutoring);
+  Future<List<Tutoring>> getTutoringsByTutoringRequestIds(List<String> tutoringRequestIds) {
+    return dataSource.getTutoringsByTutoringRequestIds(tutoringRequestIds);
   }
 
   @override
-  Future<void> updateTutoring(Tutoring tutoring) async {
-    await dataSource.updateTutoring(tutoring);
+  Future<Tutoring> addTutoring(Tutoring tutoring) {
+    return dataSource.addTutoring(tutoring);
+  }
+
+  @override
+  Future<void> updateTutoring(Tutoring tutoring) {
+    return dataSource.updateTutoring(tutoring);
   }
 }

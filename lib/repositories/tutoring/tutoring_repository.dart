@@ -9,7 +9,10 @@ abstract class TutoringRepository {
 
   Future<List<Tutoring>> getTutoringsByStudentId(String studentId);
 
-  Future<void> addTutoring(Tutoring tutoring);
+    // Nuevo método para obtener tutorías por lista de IDs de solicitudes
+  Future<List<Tutoring>> getTutoringsByTutoringRequestIds(List<String> tutoringRequestIds);
+
+  Future<Tutoring> addTutoring(Tutoring tutoring);
 
   Future<void> updateTutoring(Tutoring tutoring);
 }

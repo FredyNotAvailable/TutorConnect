@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tutorconnect/models/career.dart';
-import 'package:tutorconnect/models/subject.dart';
 import 'package:tutorconnect/models/subject_enrollment.dart';
 import 'package:tutorconnect/models/tutoring.dart';
-import 'package:tutorconnect/models/user.dart';
+import 'package:tutorconnect/models/tutoring_request.dart';
 import 'package:tutorconnect/providers/career_provider.dart';
 import 'package:tutorconnect/providers/classroom_provider.dart';
 import 'package:tutorconnect/providers/subject_enrollment_provider.dart';
 import 'package:tutorconnect/providers/subject_provider.dart';
 import 'package:tutorconnect/providers/tutoring_provider.dart';
+import 'package:tutorconnect/providers/tutoring_request_provider.dart';
 import 'package:tutorconnect/providers/user_provider.dart';
 import 'package:tutorconnect/models/teacher_plan.dart';
 import 'package:tutorconnect/providers/teacher_plan_provider.dart';
@@ -151,7 +151,7 @@ class _CrearTutoriaWidgetState extends ConsumerState<CrearTutoriaWidget> {
     final createdAt = DateTime.now();
 
     final tutoring = Tutoring(
-      id: '', // Asignado por backend/Firebase
+      id: '', // Lo asigna Firebase
       classroomId: _classroomId!,
       createdAt: createdAt,
       date: DateTime(_selectedDate!.year, _selectedDate!.month, _selectedDate!.day),
@@ -159,14 +159,42 @@ class _CrearTutoriaWidgetState extends ConsumerState<CrearTutoriaWidget> {
       endTime: _endTime!.format(context),
       notes: _notesController.text.trim(),
       status: TutoringStatus.active,
-      tutoringRequestIds: tutoringRequestIds,
+      tutoringRequestIds: [], // Inicialmente vacío
       subjectId: _selectedSubjectId!,
       teacherId: _teacherId!,
       topic: _topicController.text.trim(),
     );
 
     try {
-      await ref.read(tutoringProvider.notifier).addTutoring(tutoring);
+      final createdTutoring = await ref.read(tutoringProvider.notifier).addTutoring(tutoring);
+
+      if (createdTutoring == null) {
+        throw Exception('Error al crear la tutoría');
+      }
+
+      // Crear solicitudes para cada estudiante
+      List<String> createdRequestIds = [];
+
+      for (final studentId in _studentIds) {
+        final request = TutoringRequest(
+          id: '', // será asignado por Firestore
+          tutoringId: createdTutoring.id,
+          studentId: studentId,
+          status: TutoringRequestStatus.pending,
+          sentAt: DateTime.now(),
+          responseAt: null,
+        );
+
+        final createdRequest = await ref.read(tutoringRequestProvider.notifier).addTutoringRequest(request);
+        if (createdRequest != null) {
+          createdRequestIds.add(createdRequest.id);
+        }
+      }
+
+      // Actualizar la tutoría con los IDs de solicitudes creadas
+      final updatedTutoring = createdTutoring.copyWith(tutoringRequestIds: createdRequestIds);
+      await ref.read(tutoringProvider.notifier).updateTutoring(updatedTutoring);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Tutoría creada exitosamente')),
       );
@@ -179,6 +207,7 @@ class _CrearTutoriaWidgetState extends ConsumerState<CrearTutoriaWidget> {
       if (mounted) setState(() => _isSubmitting = false);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -338,8 +367,8 @@ class _CrearTutoriaWidgetState extends ConsumerState<CrearTutoriaWidget> {
                         inProgressEnrollments.any((enrollment) => enrollment.studentId == u.id)
                       ).toList();
 
-                      // Aquí asignas la lista de studentIds para crear la tutoría después
-                      // _studentIds = estudiantes.map((e) => e.id).toList();
+                      // *** Aquí es el lugar correcto para asignar la lista de IDs ***
+                      _studentIds = estudiantes.map((e) => e.id).toList();
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,6 +388,7 @@ class _CrearTutoriaWidgetState extends ConsumerState<CrearTutoriaWidget> {
                       );
                     },
                   ),
+
 
 
                   // Selector Aula dinámico

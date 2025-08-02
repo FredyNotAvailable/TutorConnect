@@ -44,6 +44,24 @@ class TutoringRequest {
     };
   }
 
+  TutoringRequest copyWith({
+    String? id,
+    DateTime? responseAt,
+    DateTime? sentAt,
+    TutoringRequestStatus? status,
+    String? studentId,
+    String? tutoringId,
+  }) {
+    return TutoringRequest(
+      id: id ?? this.id,
+      responseAt: responseAt ?? this.responseAt,
+      sentAt: sentAt ?? this.sentAt,
+      status: status ?? this.status,
+      studentId: studentId ?? this.studentId,
+      tutoringId: tutoringId ?? this.tutoringId,
+    );
+  }
+
   static TutoringRequestStatus _stringToStatus(String status) {
     switch (status) {
       case 'accepted':

@@ -24,7 +24,7 @@ class TutoringRequestRepositoryImpl implements TutoringRequestRepository {
   }
 
   @override
-  Future<void> addTutoringRequest(TutoringRequest tutoringRequest) {
+  Future<TutoringRequest> addTutoringRequest(TutoringRequest tutoringRequest) {
     return dataSource.addTutoringRequest(tutoringRequest);
   }
 

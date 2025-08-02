@@ -7,7 +7,7 @@ abstract class TutoringRequestRepository {
 
   Future<List<TutoringRequest>> getTutoringRequestsByStudentId(String studentId);
 
-  Future<void> addTutoringRequest(TutoringRequest tutoringRequest);
+  Future<TutoringRequest> addTutoringRequest(TutoringRequest tutoringRequest);
 
   Future<void> updateTutoringRequest(TutoringRequest tutoringRequest);
 

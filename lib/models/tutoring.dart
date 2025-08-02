@@ -84,4 +84,34 @@ class Tutoring {
   static String _statusToString(TutoringStatus status) {
     return status.toString().split('.').last;
   }
+
+  Tutoring copyWith({
+    String? id,
+    String? classroomId,
+    DateTime? createdAt,
+    DateTime? date,
+    String? startTime,
+    String? endTime,
+    String? notes,
+    TutoringStatus? status,
+    List<String>? tutoringRequestIds,
+    String? subjectId,
+    String? teacherId,
+    String? topic,
+  }) {
+    return Tutoring(
+      id: id ?? this.id,
+      classroomId: classroomId ?? this.classroomId,
+      createdAt: createdAt ?? this.createdAt,
+      date: date ?? this.date,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      notes: notes ?? this.notes,
+      status: status ?? this.status,
+      tutoringRequestIds: tutoringRequestIds ?? this.tutoringRequestIds,
+      subjectId: subjectId ?? this.subjectId,
+      teacherId: teacherId ?? this.teacherId,
+      topic: topic ?? this.topic,
+    );
+  }
 }

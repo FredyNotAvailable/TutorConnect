@@ -20,7 +20,7 @@ final tutoringRepositoryProvider = Provider<TutoringRepository>((ref) {
 // 3. Proveedor del Service que usa el Repositorio
 final tutoringServiceProvider = Provider<TutoringService>((ref) {
   final repository = ref.read(tutoringRepositoryProvider);
-  return TutoringService(repository);
+  return TutoringService(repository); // SOLO 1 argumento, el repositorio
 });
 
 // 4. StateNotifier para manejar estado y acciones
@@ -36,9 +36,10 @@ class TutoringNotifier extends StateNotifier<List<Tutoring>> {
     state = tutorings;
   }
 
-  Future<void> addTutoring(Tutoring tutoring) async {
-    await _service.addTutoring(tutoring);
+  Future<Tutoring> addTutoring(Tutoring tutoring) async {
+    final createdTutoring = await _service.addTutoring(tutoring);
     await loadTutorings();
+    return createdTutoring;
   }
 
   Future<void> updateTutoring(Tutoring tutoring) async {
@@ -50,7 +51,7 @@ class TutoringNotifier extends StateNotifier<List<Tutoring>> {
     return await _service.getTutoringById(id);
   }
 
-    Future<void> loadTutoringsByTeacherId(String teacherId) async {
+  Future<void> loadTutoringsByTeacherId(String teacherId) async {
     final tutorings = await _service.getTutoringsByTeacherId(teacherId);
     state = tutorings;
   }
@@ -59,6 +60,11 @@ class TutoringNotifier extends StateNotifier<List<Tutoring>> {
     final tutorings = await _service.getTutoringsByStudentId(studentId);
     state = tutorings;
   }
+
+  Future<void> loadTutoringsByTutoringRequestIds(List<String> tutoringRequestIds) async {
+  // Aquí haces la consulta con where('tutoringRequestIds', arrayContainsAny: tutoringRequestIds)
+}
+
 }
 
 // 5. Proveedor del StateNotifier
