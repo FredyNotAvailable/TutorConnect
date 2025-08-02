@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tutorconnect/models/tutoring_request.dart';
 
 enum AttendanceStatus {
   present,
@@ -55,6 +56,30 @@ class TutoringAttendance {
         return 'present';
       case AttendanceStatus.absent:
         return 'absent';
+    }
+  }
+
+  static String statusToStringSpanish(AttendanceStatus status) {
+    switch (status) {
+      case AttendanceStatus.present:
+        return 'Presente';
+      case AttendanceStatus.absent:
+        return 'Ausente';
+    }
+  }
+}
+
+class TutoringRequestUtils {
+  static String statusToSpanish(TutoringRequestStatus status) {
+    switch (status) {
+      case TutoringRequestStatus.pending:
+        return 'Pendiente';
+      case TutoringRequestStatus.accepted:
+        return 'Aceptado';
+      case TutoringRequestStatus.rejected:
+        return 'Rechazado';
+      default:
+        return status.name;
     }
   }
 }

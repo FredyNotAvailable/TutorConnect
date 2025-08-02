@@ -37,7 +37,7 @@ class TutoringRequest {
   Map<String, dynamic> toMap() {
     return {
       'responseAt': responseAt,
-      'sentAt': sentAt,
+      'sentAt': Timestamp.fromDate(sentAt),
       'status': _statusToString(status),
       'studentId': studentId,
       'tutoringId': tutoringId,

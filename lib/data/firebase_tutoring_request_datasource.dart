@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
-import 'package:tutorconnect/models/tutoring.dart';
 import '../models/tutoring_request.dart';
 
 class FirebaseTutoringRequestDataSource {

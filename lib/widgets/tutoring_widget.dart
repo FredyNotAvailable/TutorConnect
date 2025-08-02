@@ -6,8 +6,8 @@ import 'package:tutorconnect/providers/tutoring_provider.dart';
 import 'package:tutorconnect/providers/tutoring_request_provider.dart';
 import 'package:tutorconnect/providers/user_provider.dart';
 import 'package:tutorconnect/utils/helpers/student_helper.dart';
-import 'package:tutorconnect/widgets/teacher/crear_tutoria_widget.dart';
 import 'package:tutorconnect/widgets/tutoring_card.dart';
+import 'package:tutorconnect/routes/app_routes.dart'; // Asegúrate de tener esto
 
 class TutoringWidget extends ConsumerStatefulWidget {
   const TutoringWidget({super.key});
@@ -19,7 +19,6 @@ class TutoringWidget extends ConsumerStatefulWidget {
 class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
   bool _loading = true;
   String? _error;
-  bool _showCrearTutoria = false;
   UserRole? _currentUserRole;
 
   List<TutoringRequest> _studentTutoringRequests = [];
@@ -51,14 +50,11 @@ class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
       if (user.role == UserRole.teacher) {
         await tutoringNotifier.loadTutoringsByTeacherId(user.id);
       } else if (user.role == UserRole.student) {
-        // Primero, carga solicitudes de tutoría para este estudiante
         final tutoringRequestNotifier = ref.read(tutoringRequestProvider.notifier);
         _studentTutoringRequests = await tutoringRequestNotifier.getTutoringRequestsByStudentId(user.id);
 
         final tutoringRequestIds = _studentTutoringRequests.map((r) => r.id).toList();
-
         await tutoringNotifier.loadTutoringsByTutoringRequestIds(tutoringRequestIds);
-
       } else {
         setState(() {
           _error = 'Rol de usuario no válido.';
@@ -80,18 +76,6 @@ class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_showCrearTutoria) {
-      return CrearTutoriaWidget(
-        onBack: () {
-          setState(() {
-            _showCrearTutoria = false;
-            _loading = true;
-          });
-          _loadTutorings(); // recarga las tutorías al volver
-        },
-      );
-    }
-
     final tutorings = ref.watch(tutoringProvider);
 
     // Si es estudiante, filtrar solo tutorías con solicitudes aceptadas
@@ -121,10 +105,12 @@ class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
                     ),
       floatingActionButton: (_currentUserRole == UserRole.teacher)
           ? FloatingActionButton(
-              onPressed: () {
+              onPressed: () async {
+                await Navigator.pushNamed(context, AppRoutes.createTutoring);
                 setState(() {
-                  _showCrearTutoria = true;
+                  _loading = true;
                 });
+                _loadTutorings();
               },
               tooltip: 'Crear tutoría',
               child: const Icon(Icons.add),

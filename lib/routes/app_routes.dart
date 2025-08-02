@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tutorconnect/models/tutoring.dart';
 import 'package:tutorconnect/models/user.dart';
 import 'package:tutorconnect/screens/home_screen.dart';
 import 'package:tutorconnect/screens/profile_screen.dart';
+import 'package:tutorconnect/screens/tutoring_detail_screen.dart';
+import 'package:tutorconnect/widgets/teacher/crear_tutoria_screen.dart';
 import '../screens/login_screen.dart';
+
 // Importa aquí otras pantallas cuando las tengas
 
 class AppRoutes {
@@ -10,6 +14,9 @@ class AppRoutes {
   // Define más rutas estáticas aquí, por ejemplo:
   static const home = '/home';
   static const profile = '/profile';
+  static const tutoring = '/tutoring';
+  static const createTutoring = '/create-tutoring';
+
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -31,6 +38,23 @@ class AppRoutes {
           return MaterialPageRoute(builder: (_) => ProfileScreen(user: user,)
           );
         }
+      // Tutoring
+      case tutoring:
+        final tutoring = settings.arguments as Tutoring?;
+        if (tutoring == null) {
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(
+              body: Center(child: Text('Tutoring not provided')),
+            ),
+          );
+        } else {
+          return MaterialPageRoute(
+            builder: (_) => TutoringDetailScreen(tutoring: tutoring),
+          );
+        }
+      case createTutoring:
+        return MaterialPageRoute(builder: (_) => const CrearTutoriaScreen());
+
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

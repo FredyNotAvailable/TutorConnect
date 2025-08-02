@@ -113,30 +113,37 @@ class _NotificationsWidgetState extends ConsumerState<NotificationsWidget> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
-                            onPressed: () async {
-                              final updatedRequest = request.copyWith(status: TutoringRequestStatus.rejected);
+                            onPressed: isPending ? () async {
+                              final updatedRequest = request.copyWith(
+                                status: TutoringRequestStatus.rejected,
+                                responseAt: DateTime.now(),
+                              );
                               await tutoringRequestNotifier.updateTutoringRequest(updatedRequest);
                               if (mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Solicitud rechazada')),
                                 );
                               }
-                            },
+                            } : null,
                             child: const Text('Rechazar'),
                           ),
-                          const SizedBox(width: 8),
+
                           ElevatedButton(
-                            onPressed: () async {
-                              final updatedRequest = request.copyWith(status: TutoringRequestStatus.accepted);
+                            onPressed: isPending ? () async {
+                              final updatedRequest = request.copyWith(
+                                status: TutoringRequestStatus.accepted,
+                                responseAt: DateTime.now(),
+                              );
                               await tutoringRequestNotifier.updateTutoringRequest(updatedRequest);
                               if (mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Solicitud aceptada')),
                                 );
                               }
-                            },
+                            } : null,
                             child: const Text('Aceptar'),
                           ),
+
                         ],
                       ),
                   ],
