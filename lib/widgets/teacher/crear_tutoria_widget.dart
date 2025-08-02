@@ -4,6 +4,7 @@ import 'package:tutorconnect/models/career.dart';
 import 'package:tutorconnect/models/subject_enrollment.dart';
 import 'package:tutorconnect/models/tutoring.dart';
 import 'package:tutorconnect/models/tutoring_request.dart';
+import 'package:tutorconnect/models/teacher_plan.dart';
 import 'package:tutorconnect/providers/career_provider.dart';
 import 'package:tutorconnect/providers/classroom_provider.dart';
 import 'package:tutorconnect/providers/subject_enrollment_provider.dart';
@@ -11,7 +12,6 @@ import 'package:tutorconnect/providers/subject_provider.dart';
 import 'package:tutorconnect/providers/tutoring_provider.dart';
 import 'package:tutorconnect/providers/tutoring_request_provider.dart';
 import 'package:tutorconnect/providers/user_provider.dart';
-import 'package:tutorconnect/models/teacher_plan.dart';
 import 'package:tutorconnect/providers/teacher_plan_provider.dart';
 import 'package:tutorconnect/utils/helpers/student_helper.dart'; // Ajusta la ruta si es necesario
 
