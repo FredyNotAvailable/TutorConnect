@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tutorconnect/models/user.dart'; // Tu modelo User
+import 'package:tutorconnect/models/user.dart';
 import 'package:tutorconnect/routes/app_routes.dart';
 import 'package:tutorconnect/providers/auth_provider.dart';
 import 'package:tutorconnect/providers/user_provider.dart';
+import 'package:tutorconnect/widgets/notifications_widget.dart';
+import 'package:tutorconnect/widgets/profile_widget.dart';
+import 'package:tutorconnect/widgets/tutoring_widget.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -13,63 +16,64 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    final authUserAsync = ref.watch(authStateProvider);
+    final currentUserAsync = ref.watch(currentUserProvider);
 
-    return authUserAsync.when(
-      data: (firebaseUser) {
-        if (firebaseUser == null) {
+    return currentUserAsync.when(
+      data: (customUser) {
+        if (customUser == null) {
           return const Scaffold(
-            body: Center(child: Text('No estás logueado')),
+            body: Center(child: Text('User not found or not logged in')),
           );
         }
 
-        return FutureBuilder<User?>(
-          future: ref.read(userServiceProvider).getUserById(firebaseUser.uid),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
+        final List<Widget> pages = <Widget>[
+          const TutoringWidget(),
+          const NotificationsWidget(),
+          ProfileWidget(customUser: customUser),
+        ];
 
-            if (!snapshot.hasData || snapshot.data == null) {
-              return const Scaffold(
-                body: Center(child: Text('Usuario personalizado no encontrado')),
-              );
-            }
-
-            final customUser = snapshot.data!;
-
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Home'),
-                automaticallyImplyLeading: false,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.person),
-                    tooltip: 'Perfil',
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.profile,
-                        arguments: customUser,
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.logout),
-                    tooltip: 'Cerrar sesión',
-                    onPressed: () async {
-                      await ref.read(signOutProvider.future);
-                      Navigator.pushReplacementNamed(context, AppRoutes.login);
-                    },
-                  ),
-                ],
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('TutorConnect'),
+            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.logout),
+                tooltip: 'Log Out',
+                onPressed: () async {
+                  await ref.read(signOutProvider.future);
+                  Navigator.pushReplacementNamed(context, AppRoutes.login);
+                },
               ),
-            );
-          },
+            ],
+          ),
+          body: pages[_selectedIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.school),
+                label: 'Tutoring',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.notifications),
+                label: 'Notifications',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+          ),
         );
       },
       loading: () => const Scaffold(

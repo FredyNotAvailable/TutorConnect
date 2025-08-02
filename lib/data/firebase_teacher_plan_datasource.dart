@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
+import 'package:tutorconnect/repositories/teacher_plan/teacher_plan_repository.dart';
 
 import '../models/teacher_plan.dart';
 
-class FirebaseTeacherPlanDataSource {
+class FirebaseTeacherPlanDataSource implements TeacherPlanRepository{
   final CollectionReference teacherPlansCollection =
       FirebaseFirestore.instance.collection('teacher_plans');
 
   final logger = Logger();
 
+  @override
   Future<TeacherPlan?> getTeacherPlanById(String id) async {
     try {
       final doc = await teacherPlansCollection.doc(id).get();
@@ -26,6 +28,7 @@ class FirebaseTeacherPlanDataSource {
     return null;
   }
 
+  @override
   Future<List<TeacherPlan>> getAllTeacherPlans() async {
     try {
       final snapshot = await teacherPlansCollection.get();
@@ -41,6 +44,7 @@ class FirebaseTeacherPlanDataSource {
     }
   }
 
+  @override
   Future<List<TeacherPlan>> getTeacherPlansByTeacherId(String teacherId) async {
     try {
       final snapshot = await teacherPlansCollection
@@ -60,6 +64,7 @@ class FirebaseTeacherPlanDataSource {
     }
   }
 
+  @override
   Future<List<TeacherPlan>> getActiveTeacherPlansByCareerId(String careerId) async {
     try {
       final snapshot = await teacherPlansCollection

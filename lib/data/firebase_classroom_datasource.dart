@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
+import 'package:tutorconnect/repositories/classroom/classroom_repository.dart';
 import '../models/classroom.dart';
 
-class FirebaseClassroomDataSource {
+class FirebaseClassroomDataSource implements ClassroomRepository {
   final CollectionReference classroomsCollection =
       FirebaseFirestore.instance.collection('classrooms');
   final logger = Logger();
 
+  @override
   Future<Classroom?> getClassroomById(String id) async {
     try {
       final doc = await classroomsCollection.doc(id).get();
@@ -24,6 +26,7 @@ class FirebaseClassroomDataSource {
     return null;
   }
 
+  @override
   Future<List<Classroom>> getAllClassrooms() async {
     try {
       final snapshot = await classroomsCollection.get();
@@ -37,5 +40,15 @@ class FirebaseClassroomDataSource {
       Fluttertoast.showToast(msg: 'Error al cargar aulas: $e');
       return [];
     }
+  }
+
+  @override
+  Stream<List<Classroom>> watchAvailableClassrooms() {
+    return classroomsCollection
+        .where('available', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Classroom.fromMap(doc.data() as Map<String, dynamic>, doc.id))
+            .toList());
   }
 }

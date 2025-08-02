@@ -1,47 +1,61 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tutorconnect/data/firebase_teacher_plan_datasource.dart';
+import 'package:tutorconnect/models/teacher_plan.dart';
 import 'package:tutorconnect/repositories/teacher_plan/teacher_plan_repository.dart';
 import 'package:tutorconnect/repositories/teacher_plan/teacher_plan_repository_impl.dart';
 import 'package:tutorconnect/services/teacher_plan_service.dart';
-import 'package:tutorconnect/models/teacher_plan.dart';
 
-/// Proveedor del DataSource concreto
+/// 1. Proveedor del DataSource concreto
 final firebaseTeacherPlanDataSourceProvider = Provider<FirebaseTeacherPlanDataSource>((ref) {
   return FirebaseTeacherPlanDataSource();
 });
 
-/// Proveedor del Repositorio que usa el DataSource
+/// 2. Proveedor del Repositorio que usa el DataSource
 final teacherPlanRepositoryProvider = Provider<TeacherPlanRepository>((ref) {
   final dataSource = ref.read(firebaseTeacherPlanDataSourceProvider);
   return TeacherPlanRepositoryImpl(dataSource: dataSource);
 });
 
-/// Proveedor del Service que usa el Repositorio
+/// 3. Proveedor del Service que usa el Repositorio
 final teacherPlanServiceProvider = Provider<TeacherPlanService>((ref) {
   final repository = ref.read(teacherPlanRepositoryProvider);
   return TeacherPlanService(repository);
 });
 
-/// Obtener un TeacherPlan por ID
-final teacherPlanByIdProvider = FutureProvider.family<TeacherPlan?, String>((ref, id) {
-  final service = ref.read(teacherPlanServiceProvider);
-  return service.getTeacherPlanById(id);
-});
+/// 4. StateNotifier para manejar estado y acciones
+class TeacherPlanNotifier extends StateNotifier<List<TeacherPlan>> {
+  final TeacherPlanService _service;
 
-/// Obtener todos los TeacherPlans
-final allTeacherPlansProvider = FutureProvider<List<TeacherPlan>>((ref) {
-  final service = ref.read(teacherPlanServiceProvider);
-  return service.getAllTeacherPlans();
-});
+  TeacherPlanNotifier(this._service) : super([]) {
+    loadAllTeacherPlans();
+  }
 
-/// Obtener TeacherPlans activos por careerId
-final activeTeacherPlansByCareerProvider = FutureProvider.family<List<TeacherPlan>, String>((ref, careerId) {
-  final service = ref.read(teacherPlanServiceProvider);
-  return service.getActiveTeacherPlansByCareerId(careerId);
-});
+  Future<void> loadAllTeacherPlans() async {
+    final plans = await _service.getAllTeacherPlans();
+    state = plans;
+  }
 
-/// Obtener TeacherPlans por teacherId
-final teacherPlansByTeacherIdProvider = FutureProvider.family<List<TeacherPlan>, String>((ref, teacherId) {
+  Future<void> loadTeacherPlansByTeacherId(String teacherId) async {
+    final plans = await _service.getTeacherPlansByTeacherId(teacherId);
+    state = plans;
+  }
+
+  Future<void> loadActivePlansByCareer(String careerId) async {
+    final plans = await _service.getActiveTeacherPlansByCareerId(careerId);
+    state = plans;
+  }
+
+  Future<TeacherPlan?> getTeacherPlanById(String id) async {
+    return await _service.getTeacherPlanById(id);
+  }
+
+  void clearPlans() {
+    state = [];
+  }
+}
+
+/// 5. Proveedor del StateNotifier
+final teacherPlanProvider = StateNotifierProvider<TeacherPlanNotifier, List<TeacherPlan>>((ref) {
   final service = ref.read(teacherPlanServiceProvider);
-  return service.getTeacherPlansByTeacherId(teacherId);
+  return TeacherPlanNotifier(service);
 });

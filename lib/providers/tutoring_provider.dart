@@ -49,6 +49,16 @@ class TutoringNotifier extends StateNotifier<List<Tutoring>> {
   Future<Tutoring?> getTutoringById(String id) async {
     return await _service.getTutoringById(id);
   }
+
+    Future<void> loadTutoringsByTeacherId(String teacherId) async {
+    final tutorings = await _service.getTutoringsByTeacherId(teacherId);
+    state = tutorings;
+  }
+
+  Future<void> loadTutoringsByStudentId(String studentId) async {
+    final tutorings = await _service.getTutoringsByStudentId(studentId);
+    state = tutorings;
+  }
 }
 
 // 5. Proveedor del StateNotifier

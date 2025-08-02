@@ -17,4 +17,10 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
   Future<List<Classroom>> getAllClassrooms() {
     return dataSource.getAllClassrooms();
   }
+
+  @override
+  Stream<List<Classroom>> watchAvailableClassrooms() {
+    // Asumiendo que el dataSource tiene un método watchAvailableClassrooms que devuelve un Stream
+    return dataSource.watchAvailableClassrooms();
+  }
 }

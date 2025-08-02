@@ -7,18 +7,18 @@ enum TutoringStatus {
 }
 
 class Tutoring {
-  final String id;
-  final String classroomId;
-  final DateTime createdAt;
-  final DateTime date;
-  final String startTime; // format "HH:mm"
-  final String endTime;   // format "HH:mm"
-  final String notes;
-  final TutoringStatus status;
-  final List<String> studentIds;
-  final String subjectId;
-  final String teacherId;
-  final String topic;
+  final String id;               // ID único de la tutoría
+  final String classroomId;      // ID del aula donde se realizará la tutoría
+  final DateTime createdAt;      // Fecha y hora en que se creó la tutoría
+  final DateTime date;           // Fecha de la tutoría
+  final String startTime;        // Hora de inicio (formato "HH:mm")
+  final String endTime;          // Hora de fin (formato "HH:mm")
+  final String notes;            // Notas o comentarios adicionales sobre la tutoría
+  final TutoringStatus status;   // Estado de la tutoría (activo, finalizada, cancelada)
+  final List<String> studentIds; // Lista de IDs de los estudiantes inscritos o invitados
+  final String subjectId;        // ID de la materia o asignatura
+  final String teacherId;        // ID del docente que imparte la tutoría
+  final String topic;            // Tema o asunto que se tratará en la tutoría
 
   Tutoring({
     required this.id,

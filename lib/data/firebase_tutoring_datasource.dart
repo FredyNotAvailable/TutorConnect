@@ -6,7 +6,7 @@ import '../models/tutoring.dart';
 class FirebaseTutoringDataSource {
   final CollectionReference tutoringCollection =
       FirebaseFirestore.instance.collection('tutorings');
-  final logger = Logger();
+  final Logger logger = Logger();
 
   Future<Tutoring?> getTutoringById(String id) async {
     try {
@@ -41,7 +41,9 @@ class FirebaseTutoringDataSource {
 
   Future<List<Tutoring>> getTutoringsByTeacherId(String teacherId) async {
     try {
-      final querySnapshot = await tutoringCollection.where('teacherId', isEqualTo: teacherId).get();
+      final querySnapshot = await tutoringCollection
+          .where('teacherId', isEqualTo: teacherId)
+          .get();
       final tutorings = querySnapshot.docs
           .map((doc) => Tutoring.fromMap(doc.data() as Map<String, dynamic>, doc.id))
           .toList();
@@ -56,7 +58,9 @@ class FirebaseTutoringDataSource {
 
   Future<List<Tutoring>> getTutoringsByStudentId(String studentId) async {
     try {
-      final querySnapshot = await tutoringCollection.where('studentIds', arrayContains: studentId).get();
+      final querySnapshot = await tutoringCollection
+          .where('studentIds', arrayContains: studentId)
+          .get();
       final tutorings = querySnapshot.docs
           .map((doc) => Tutoring.fromMap(doc.data() as Map<String, dynamic>, doc.id))
           .toList();

@@ -13,4 +13,8 @@ class ClassroomService {
   Future<List<Classroom>> getAllClassrooms() async {
     return await _classroomRepository.getAllClassrooms();
   }
+
+  Stream<List<Classroom>> watchAvailableClassrooms() {
+    return _classroomRepository.watchAvailableClassrooms();
+  }
 }

@@ -29,12 +29,12 @@ class TutoringRepositoryImpl implements TutoringRepository {
   }
 
   @override
-  Future<void> addTutoring(Tutoring tutoring) {
-    return dataSource.addTutoring(tutoring);
+  Future<void> addTutoring(Tutoring tutoring) async {
+    await dataSource.addTutoring(tutoring);
   }
 
   @override
-  Future<void> updateTutoring(Tutoring tutoring) {
-    return dataSource.updateTutoring(tutoring);
+  Future<void> updateTutoring(Tutoring tutoring) async {
+    await dataSource.updateTutoring(tutoring);
   }
 }
