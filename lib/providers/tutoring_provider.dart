@@ -20,10 +20,47 @@ final tutoringRepositoryProvider = Provider<TutoringRepository>((ref) {
 // 3. Proveedor del Service que usa el Repositorio
 final tutoringServiceProvider = Provider<TutoringService>((ref) {
   final repository = ref.read(tutoringRepositoryProvider);
-  return TutoringService(repository); // SOLO 1 argumento, el repositorio
+  return TutoringService(repository);
 });
 
-// 4. StateNotifier para manejar estado y acciones
+// 4. Clase TutoringService con el método faltante incluido
+class TutoringService {
+  final TutoringRepository _repository;
+
+  TutoringService(this._repository);
+
+  Future<List<Tutoring>> getAllTutorings() async {
+    return await _repository.getAllTutorings();
+  }
+
+  Future<Tutoring> addTutoring(Tutoring tutoring) async {
+    return await _repository.addTutoring(tutoring);
+  }
+
+  Future<void> updateTutoring(Tutoring tutoring) async {
+    await _repository.updateTutoring(tutoring);
+  }
+
+  Future<Tutoring?> getTutoringById(String id) async {
+    return await _repository.getTutoringById(id);
+  }
+
+  Future<List<Tutoring>> getTutoringsByTeacherId(String teacherId) async {
+    return await _repository.getTutoringsByTeacherId(teacherId);
+  }
+
+  Future<List<Tutoring>> getTutoringsByStudentId(String studentId) async {
+    return await _repository.getTutoringsByStudentId(studentId);
+  }
+
+  // Método que buscaba: filtra tutorías por materia (subjectId)
+  Future<List<Tutoring>> getTutoringsBySubjectId(String subjectId) async {
+    final allTutorings = await getAllTutorings();
+    return allTutorings.where((tutoring) => tutoring.subjectId == subjectId).toList();
+  }
+}
+
+// 5. StateNotifier para manejar estado y acciones
 class TutoringNotifier extends StateNotifier<List<Tutoring>> {
   final TutoringService _service;
 
@@ -62,13 +99,18 @@ class TutoringNotifier extends StateNotifier<List<Tutoring>> {
   }
 
   Future<void> loadTutoringsByTutoringRequestIds(List<String> tutoringRequestIds) async {
-  // Aquí haces la consulta con where('tutoringRequestIds', arrayContainsAny: tutoringRequestIds)
+    // Aquí haces la consulta con where('tutoringRequestIds', arrayContainsAny: tutoringRequestIds)
+  }
 }
 
-}
-
-// 5. Proveedor del StateNotifier
+// 6. Proveedor del StateNotifier
 final tutoringProvider = StateNotifierProvider<TutoringNotifier, List<Tutoring>>((ref) {
   final service = ref.read(tutoringServiceProvider);
   return TutoringNotifier(service);
+});
+
+// 7. FutureProvider.family para obtener tutorías por materia
+final tutoringsBySubjectProvider = FutureProvider.family<List<Tutoring>, String>((ref, subjectId) async {
+  final service = ref.read(tutoringServiceProvider);
+  return await service.getTutoringsBySubjectId(subjectId);
 });

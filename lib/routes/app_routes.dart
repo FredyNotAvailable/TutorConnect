@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tutorconnect/models/subject.dart';
 import 'package:tutorconnect/models/tutoring.dart';
 import 'package:tutorconnect/models/user.dart';
 import 'package:tutorconnect/screens/home_screen.dart';
 import 'package:tutorconnect/screens/profile_screen.dart';
+import 'package:tutorconnect/screens/subject_details_screen.dart';
 import 'package:tutorconnect/screens/tutoring_detail_screen.dart';
 import 'package:tutorconnect/widgets/teacher/crear_tutoria_screen.dart';
 import '../screens/login_screen.dart';
@@ -16,6 +18,7 @@ class AppRoutes {
   static const profile = '/profile';
   static const tutoring = '/tutoring';
   static const createTutoring = '/create-tutoring';
+  static const subjectDetails = '/subjectDetails';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -52,6 +55,13 @@ class AppRoutes {
             builder: (_) => TutoringDetailScreen(tutoring: tutoring),
           );
         }
+      // Subjects
+            case subjectDetails:
+        final subject = settings.arguments as Subject;
+        return MaterialPageRoute(
+          builder: (_) => SubjectDetailsScreen(subject: subject),
+        );
+      
       case createTutoring:
         return MaterialPageRoute(builder: (_) => const CrearTutoriaScreen());
 

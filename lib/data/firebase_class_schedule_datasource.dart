@@ -72,4 +72,22 @@ class FirebaseClassScheduleDataSource {
       return [];
     }
   }
+
+  // Nuevo método agregado para obtener horarios por materia (subjectId)
+  Future<List<ClassSchedule>> getClassSchedulesBySubjectId(String subjectId) async {
+    try {
+      final querySnapshot = await classSchedulesCollection
+          .where('subjectId', isEqualTo: subjectId)
+          .get();
+      final schedules = querySnapshot.docs
+          .map((doc) => ClassSchedule.fromMap(doc.data() as Map<String, dynamic>, doc.id))
+          .toList();
+      Fluttertoast.showToast(msg: 'Se cargaron ${schedules.length} horarios para materia');
+      return schedules;
+    } catch (e, stackTrace) {
+      logger.e('Error al obtener horarios por materia', error: e, stackTrace: stackTrace);
+      Fluttertoast.showToast(msg: 'Error al cargar horarios de la materia: $e');
+      return [];
+    }
+  }
 }

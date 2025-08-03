@@ -13,4 +13,12 @@ class SubjectService {
   Future<List<Subject>> getAllSubjects() async {
     return await _subjectRepository.getAllSubjects();
   }
+
+  Future<List<Subject>> getSubjectsByStudentId(String studentId) async {
+    return await _subjectRepository.getSubjectsByStudentId(studentId);
+  }
+
+  Future<List<Subject>> getSubjectsByTeacherId(String teacherId) async {
+    return await _subjectRepository.getSubjectsByTeacherId(teacherId);
+  }
 }

@@ -7,6 +7,7 @@ import 'package:tutorconnect/providers/user_provider.dart';
 import 'package:tutorconnect/widgets/notifications_widget.dart';
 import 'package:tutorconnect/widgets/profile_widget.dart';
 import 'package:tutorconnect/widgets/tutoring_widget.dart';
+import 'package:tutorconnect/widgets/subjects_widget.dart';  // <-- Importa aquí
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -33,6 +34,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final List<Widget> pages = <Widget>[
           const TutoringWidget(),
           const NotificationsWidget(),
+          const SubjectsWidget(),   // <-- Aquí colocamos el SubjectsWidget
           ProfileWidget(customUser: customUser),
         ];
 
@@ -62,11 +64,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.school),
-                label: 'Tutorias',
+                label: 'Tutorías',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.notifications),
                 label: 'Notificaciones',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.class_),
+                label: 'Clases',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),

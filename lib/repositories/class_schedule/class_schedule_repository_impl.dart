@@ -27,4 +27,10 @@ class ClassScheduleRepositoryImpl implements ClassScheduleRepository {
   Future<List<ClassSchedule>> getClassSchedulesByClassroomId(String classroomId) {
     return dataSource.getClassSchedulesByClassroomId(classroomId);
   }
+
+  // Nuevo método agregado
+  @override
+  Future<List<ClassSchedule>> getClassSchedulesBySubjectId(String subjectId) {
+    return dataSource.getClassSchedulesBySubjectId(subjectId);
+  }
 }

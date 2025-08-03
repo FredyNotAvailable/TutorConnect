@@ -74,3 +74,9 @@ final currentUserProvider = FutureProvider<User?>((ref) async {
 
   return user;
 });
+
+final userByIdProvider = FutureProvider.family<User?, String>((ref, userId) async {
+  // Usar directamente el servicio para no depender del estado de la lista completa
+  final userService = ref.read(userServiceProvider);
+  return await userService.getUserById(userId);
+});

@@ -59,3 +59,19 @@ final teacherPlanProvider = StateNotifierProvider<TeacherPlanNotifier, List<Teac
   final service = ref.read(teacherPlanServiceProvider);
   return TeacherPlanNotifier(service);
 });
+
+
+final teacherPlanBySubjectIdProvider = FutureProvider.family<TeacherPlan?, String>((ref, subjectId) async {
+  // Acceso al service directamente para evitar limitación del StateNotifier (que no es async)
+  final service = ref.read(teacherPlanServiceProvider);
+  final allPlans = await service.getAllTeacherPlans();
+
+  for (final plan in allPlans) {
+    for (final materias in plan.subjectsByCycle.values) {
+      if (materias.contains(subjectId)) {
+        return plan;
+      }
+    }
+  }
+  return null;
+});

@@ -46,10 +46,23 @@ class ClassScheduleNotifier extends StateNotifier<List<ClassSchedule>> {
   Future<List<ClassSchedule>> getSchedulesByClassroomId(String classroomId) async {
     return await _service.getClassSchedulesByClassroomId(classroomId);
   }
+
+  // Nuevo método para obtener horarios activos por materia
+  Future<List<ClassSchedule>> getActiveSchedulesBySubjectId(String subjectId) async {
+    final allSchedules = await _service.getClassSchedulesBySubjectId(subjectId);
+    final activeSchedules = allSchedules.where((schedule) => schedule.isActive).toList();
+    return activeSchedules;
+  }
 }
 
 // 5. Proveedor del StateNotifier
 final classScheduleProvider = StateNotifierProvider<ClassScheduleNotifier, List<ClassSchedule>>((ref) {
   final service = ref.read(classScheduleServiceProvider);
   return ClassScheduleNotifier(service);
+});
+
+// 6. FutureProvider.family para obtener horarios activos por materia
+final classSchedulesBySubjectProvider = FutureProvider.family<List<ClassSchedule>, String>((ref, subjectId) async {
+  final notifier = ref.read(classScheduleProvider.notifier);
+  return await notifier.getActiveSchedulesBySubjectId(subjectId);
 });

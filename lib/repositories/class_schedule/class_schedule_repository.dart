@@ -8,4 +8,7 @@ abstract class ClassScheduleRepository {
   Future<List<ClassSchedule>> getClassSchedulesByTeacherId(String teacherId);
 
   Future<List<ClassSchedule>> getClassSchedulesByClassroomId(String classroomId);
+
+  // Nuevo método
+  Future<List<ClassSchedule>> getClassSchedulesBySubjectId(String subjectId);
 }

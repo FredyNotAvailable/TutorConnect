@@ -52,6 +52,29 @@ class MyApp extends ConsumerWidget {
           // eliminamos initialRoute y onGenerateRoute para delegar a AuthGate
           home: const AuthGate(),
           onGenerateRoute: AppRoutes.generateRoute,
+          theme: ThemeData(
+            // Definimos un tema claro con texto negro por defecto
+            brightness: Brightness.light,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              iconTheme: IconThemeData(color: Colors.black),
+              titleTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              actionsIconTheme: IconThemeData(color: Colors.black),
+              elevation: 1,
+            ),
+            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              selectedItemColor: Colors.blue,
+              unselectedItemColor: Colors.grey,
+            ),
+            textTheme: const TextTheme(
+              bodyMedium: TextStyle(color: Colors.black),
+            ),
+          ),
         );
       },
       loading: () => const MaterialApp(

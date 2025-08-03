@@ -21,4 +21,9 @@ class ClassScheduleService {
   Future<List<ClassSchedule>> getClassSchedulesByClassroomId(String classroomId) async {
     return await _repository.getClassSchedulesByClassroomId(classroomId);
   }
+  
+  // Nuevo método agregado para obtener horarios por materia
+  Future<List<ClassSchedule>> getClassSchedulesBySubjectId(String subjectId) async {
+    return await _repository.getClassSchedulesBySubjectId(subjectId);
+  }
 }

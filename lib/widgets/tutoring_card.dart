@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tutorconnect/models/tutoring.dart';
-import 'package:tutorconnect/routes/app_routes.dart'; // Asegúrate de importar tu AppRoutes
+import 'package:tutorconnect/routes/app_routes.dart';
 
 class TutoringCard extends StatelessWidget {
   final Tutoring tutoring;
@@ -22,24 +22,40 @@ class TutoringCard extends StatelessWidget {
         );
       },
       child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,  // importante para que el Column no expanda
             children: [
-              Text('Topic: ${tutoring.topic}',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              Text('Date: $dateFormatted'),
-              Text('Time: ${tutoring.startTime} - ${tutoring.endTime}'),
-              const SizedBox(height: 8),
-              Text('Status: $statusText',
-                  style: TextStyle(
-                    color: _statusColor(tutoring.status),
-                    fontWeight: FontWeight.w600,
-                  )),
+              Text(
+                'Topic: ${tutoring.topic}',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Date: $dateFormatted',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                'Time: ${tutoring.startTime} - ${tutoring.endTime}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Status: $statusText',
+                style: TextStyle(
+                  color: _statusColor(tutoring.status),
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
           ),
         ),
@@ -56,7 +72,7 @@ class TutoringCard extends StatelessWidget {
       case TutoringStatus.canceled:
         return Colors.red;
       default:
-        return Colors.black; // O algún color neutro
+        return Colors.black;
     }
   }
 }
