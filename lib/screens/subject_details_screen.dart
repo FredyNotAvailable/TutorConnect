@@ -4,21 +4,36 @@ import 'package:tutorconnect/models/subject.dart';
 import 'package:tutorconnect/models/class_schedule.dart';
 import 'package:tutorconnect/models/tutoring.dart';
 import 'package:tutorconnect/providers/class_schedule_provider.dart';
-import 'package:tutorconnect/providers/subject_provider.dart';
 import 'package:tutorconnect/providers/teacher_plan_provider.dart';
 import 'package:tutorconnect/providers/tutoring_provider.dart';
 import 'package:tutorconnect/providers/user_provider.dart';
 import 'package:tutorconnect/widgets/tutoring_card.dart';
 
-class SubjectDetailsScreen extends ConsumerWidget {
+class SubjectDetailsScreen extends ConsumerStatefulWidget {
   final Subject subject;
 
   const SubjectDetailsScreen({super.key, required this.subject});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<ClassSchedule>> schedulesAsync = ref.watch(classSchedulesBySubjectProvider(subject.id));
-    final AsyncValue<List<Tutoring>> tutoringsAsync = ref.watch(tutoringsBySubjectProvider(subject.id));
+  ConsumerState<SubjectDetailsScreen> createState() => _SubjectDetailsScreenState();
+}
+
+class _SubjectDetailsScreenState extends ConsumerState<SubjectDetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Forzar recarga al entrar a la pantalla (una sola vez)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.refresh(classSchedulesBySubjectProvider(widget.subject.id));
+      ref.refresh(tutoringsBySubjectProvider(widget.subject.id));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final subject = widget.subject;
+    final schedulesAsync = ref.watch(classSchedulesBySubjectProvider(subject.id));
+    final tutoringsAsync = ref.watch(tutoringsBySubjectProvider(subject.id));
 
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +41,7 @@ class SubjectDetailsScreen extends ConsumerWidget {
         elevation: 1,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -56,18 +71,7 @@ class SubjectDetailsScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: schedules.map((schedule) {
                     final dayName = ClassSchedule.dayOfWeekToString(schedule.dayOfWeek);
-                    final subjectNameProvider = ref.watch(subjectByIdProvider(schedule.subjectId));
-                    return subjectNameProvider.when(
-                      data: (subject) {
-                        final subjectName = subject?.name ?? 'Materia desconocida';
-                        return Text('$dayName: ${schedule.startTime} - ${schedule.endTime}');
-                      },
-                      loading: () => const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4),
-                        child: CircularProgressIndicator(),
-                      ),
-                      error: (e, _) => Text('Error cargando materia: $e'),
-                    );
+                    return Text('$dayName: ${schedule.startTime} - ${schedule.endTime}');
                   }).toList(),
                 );
               },
@@ -82,16 +86,11 @@ class SubjectDetailsScreen extends ConsumerWidget {
                 if (tutorings.isEmpty) {
                   return const Text('No hay tutorías relacionadas');
                 }
-                return GridView.builder(
+                return ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: tutorings.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // 2 columnas
-                    mainAxisSpacing: 12, // espacio vertical entre items
-                    crossAxisSpacing: 12, // espacio horizontal entre items
-                    childAspectRatio: 3 / 2, // ancho / alto para que no queden tan cuadrados
-                  ),
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     return TutoringCard(tutoring: tutorings[index]);
                   },

@@ -53,3 +53,14 @@ class Classroom {
     }
   }
 }
+
+extension ClassroomTypeExtension on ClassroomType {
+  String get nombreEnEspanol {
+    switch (this) {
+      case ClassroomType.lab:
+        return 'Laboratorio';
+      case ClassroomType.classroom:
+        return 'Aula';
+    }
+  }
+}

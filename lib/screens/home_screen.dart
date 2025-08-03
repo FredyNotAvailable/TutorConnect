@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tutorconnect/models/user.dart';
 import 'package:tutorconnect/routes/app_routes.dart';
 import 'package:tutorconnect/providers/auth_provider.dart';
 import 'package:tutorconnect/providers/user_provider.dart';
 import 'package:tutorconnect/widgets/notifications_widget.dart';
-import 'package:tutorconnect/widgets/profile_widget.dart';
 import 'package:tutorconnect/widgets/tutoring_widget.dart';
-import 'package:tutorconnect/widgets/subjects_widget.dart';  // <-- Importa aquí
+import 'package:tutorconnect/widgets/subjects_widget.dart';
+import 'package:tutorconnect/widgets/schedule_widget.dart'; // <-- Importa aquí el widget de horarios
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -34,8 +33,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final List<Widget> pages = <Widget>[
           const TutoringWidget(),
           const NotificationsWidget(),
-          const SubjectsWidget(),   // <-- Aquí colocamos el SubjectsWidget
-          ProfileWidget(customUser: customUser),
+          const SubjectsWidget(),
+          const ScheduleWidget(),  // <-- Agregado el widget de horarios aquí
         ];
 
         return Scaffold(
@@ -43,6 +42,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             title: const Text('TutorConnect'),
             automaticallyImplyLeading: false,
             actions: [
+              IconButton(
+                icon: const Icon(Icons.person),
+                tooltip: 'Perfil',
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.profile, arguments: customUser);
+                },
+              ),
               IconButton(
                 icon: const Icon(Icons.logout),
                 tooltip: 'Log Out',
@@ -74,9 +80,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 icon: Icon(Icons.class_),
                 label: 'Clases',
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Perfil',
+              BottomNavigationBarItem(      // <-- Item añadido para horarios
+                icon: Icon(Icons.schedule),
+                label: 'Horarios',
               ),
             ],
           ),

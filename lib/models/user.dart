@@ -64,4 +64,5 @@ class User {
       createdAt: createdAt ?? this.createdAt,
     );
   }
+
 }

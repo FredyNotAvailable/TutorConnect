@@ -79,88 +79,76 @@ class _TutoringWidgetState extends ConsumerState<TutoringWidget> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final tutorings = ref.watch(tutoringProvider);
-    final subjects = ref.watch(subjectProvider);
+@override
+Widget build(BuildContext context) {
+  final tutorings = ref.watch(tutoringProvider);
+  final subjects = ref.watch(subjectProvider);
 
-    // Filtrar tutorías para estudiantes según solicitudes aceptadas
-    List<Tutoring> filteredTutorings = tutorings;
-    if (_currentUserRole == UserRole.student) {
-      final acceptedTutoringIds = _studentTutoringRequests
-          .where((req) => req.status == TutoringRequestStatus.accepted)
-          .map((req) => req.tutoringId)
-          .toSet();
+  // Filtrar tutorías para estudiantes según solicitudes aceptadas
+  List<Tutoring> filteredTutorings = tutorings;
+  if (_currentUserRole == UserRole.student) {
+    final acceptedTutoringIds = _studentTutoringRequests
+        .where((req) => req.status == TutoringRequestStatus.accepted)
+        .map((req) => req.tutoringId)
+        .toSet();
 
-      filteredTutorings = tutorings.where((t) => acceptedTutoringIds.contains(t.id)).toList();
-    }
-
-    // Agrupar tutorías por subjectId
-    final Map<String, List<Tutoring>> tutoringsBySubject = {};
-    for (var t in filteredTutorings) {
-      tutoringsBySubject.putIfAbsent(t.subjectId, () => []).add(t);
-    }
-
-    return Scaffold(
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
-              ? Center(child: Text(_error!))
-              : tutoringsBySubject.isEmpty
-                  ? const Center(child: Text('No hay tutorías disponibles.'))
-                  : ListView(
-                      padding: const EdgeInsets.all(16),
-                      children: tutoringsBySubject.entries.map((entry) {
-                        final subjectId = entry.key;
-                        final subjectTutorings = entry.value;
-                        Subject? subject;
-                        try {
-                          subject = subjects.firstWhere((s) => s.id == subjectId);
-                        } catch (e) {
-                          subject = null;
-                        }
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              subject?.name ?? 'Materia desconocida',
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: subjectTutorings.length,
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                childAspectRatio: 3 / 2,
-                              ),
-                              itemBuilder: (context, index) {
-                                final tutoring = subjectTutorings[index];
-                                return TutoringCard(tutoring: tutoring);
-                              },
-                            ),
-                            const SizedBox(height: 24),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-      floatingActionButton: (_currentUserRole == UserRole.teacher)
-          ? FloatingActionButton(
-              onPressed: () async {
-                await Navigator.pushNamed(context, AppRoutes.createTutoring);
-                setState(() {
-                  _loading = true;
-                });
-                _loadData();
-              },
-              tooltip: 'Crear tutoría',
-              child: const Icon(Icons.add),
-            )
-          : null,
-    );
+    filteredTutorings = tutorings.where((t) => acceptedTutoringIds.contains(t.id)).toList();
   }
+
+  // Agrupar tutorías por subjectId
+  final Map<String, List<Tutoring>> tutoringsBySubject = {};
+  for (var t in filteredTutorings) {
+    tutoringsBySubject.putIfAbsent(t.subjectId, () => []).add(t);
+  }
+
+  return Scaffold(
+    body: _loading
+        ? const Center(child: CircularProgressIndicator())
+        : _error != null
+            ? Center(child: Text(_error!))
+            : tutoringsBySubject.isEmpty
+                ? const Center(child: Text('No hay tutorías disponibles.'))
+                : ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: tutoringsBySubject.entries.expand((entry) {
+                      final subjectId = entry.key;
+                      final subjectTutorings = entry.value;
+                      Subject? subject;
+                      try {
+                        subject = subjects.firstWhere((s) => s.id == subjectId);
+                      } catch (e) {
+                        subject = null;
+                      }
+
+                      return [
+                        Text(
+                          subject?.name ?? 'Materia desconocida',
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        ...subjectTutorings.map((tutoring) => Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: TutoringCard(tutoring: tutoring),
+                            )),
+                        const SizedBox(height: 24),
+                      ];
+                    }).toList(),
+                  ),
+    floatingActionButton: (_currentUserRole == UserRole.teacher)
+        ? FloatingActionButton(
+            onPressed: () async {
+              await Navigator.pushNamed(context, AppRoutes.createTutoring);
+              setState(() {
+                _loading = true;
+              });
+              _loadData();
+            },
+            tooltip: 'Crear tutoría',
+            child: const Icon(Icons.add),
+          )
+        : null,
+  );
+}
+
+
 }
